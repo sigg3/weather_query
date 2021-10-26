@@ -100,7 +100,7 @@ func main() {
 		panic(readErr)
 	}
 
-	// Parse into Location struct
+	// Parse into geo using Location struct
 	geo := Location{}
 	jsonErr := json.Unmarshal(coord_body, &geo)
 	if jsonErr != nil {
@@ -156,13 +156,8 @@ func main() {
 	// Pull relevant variables
 	yr := yr_json.Data.Timeseries[0].Data.Instant.Details
 	yr_time := yr_json.Data.Timeseries[0].Time
-	// var pressure_hPa int = yr.AirPressureAtSeaLevel
-	// var temp_celsius float64 = yr.AirTemperature
-	// var humidity_percent float64 = yr.RelativeHumidity
-	// var wind_meters_sec int = yr.WindSpeed
 
-	// Get fahrenheit values for our visitors
-	// Using (0°C × 9/5) + 32 = 32°F
+	// Get temperatures
 	temp_celsius := yr.AirTemperature
 	temp_fahrenheit := (temp_celsius * (9 / 5)) + 32
 
