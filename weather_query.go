@@ -151,14 +151,15 @@ func main() {
 	temp_fahrenheit := (temp_celsius * (9 / 5)) + 32
 
 	// Print to screen (this is just lazy)
-	var output [7]string
-	output[0] = fmt.Sprintf("Current weather in:           %s (long: %v, lat: %v)", place_name, place_long, place_lat)
-	output[1] = fmt.Sprintf("Query time:                   %v", yr_time)
-	output[2] = fmt.Sprintf("Temperature (celsius):        %v\u00B0C", temp_celsius)
-	output[3] = fmt.Sprintf("Temperature (fahrenheit):     %v\u00B0F", temp_fahrenheit)
-	output[4] = fmt.Sprintf("Airpressure at sea level:     %v hPa", yr.AirPressureAtSeaLevel)
-	output[5] = fmt.Sprintf("Current humidity:             %v %%", yr.RelativeHumidity)
-	output[6] = fmt.Sprintf("Wind speed:                   %v m/sec", yr.WindSpeed)
+	var output [8]string
+	output[0] = fmt.Sprintf("Current weather in:           %s", place_name)
+	output[1] = fmt.Sprintf("Coordinates (long, lat):      %v, %v", place_long, place_lat)
+	output[2] = fmt.Sprintf("Observation timestamp:        %v", yr_time)
+	output[3] = fmt.Sprintf("Temperature (celsius):        %v\u00B0C", temp_celsius)
+	output[4] = fmt.Sprintf("Temperature (fahrenheit):     %v\u00B0F", temp_fahrenheit)
+	output[5] = fmt.Sprintf("Airpressure at sea level:     %v hPa", yr.AirPressureAtSeaLevel)
+	output[6] = fmt.Sprintf("Current humidity:             %v %%", yr.RelativeHumidity)
+	output[7] = fmt.Sprintf("Wind speed:                   %v m/sec", yr.WindSpeed)
 
 	for _, showline := range output {
 		fmt.Println(showline)
