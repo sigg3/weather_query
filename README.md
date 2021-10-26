@@ -32,7 +32,9 @@ Short and sweet.
 
 
 ### TODO
-Handle errors gracefully, e.g. when I query non-existent or unknown place name:
+* Put repetetive tasks in functions, esp. API query, cf. stackoverflow.com/a/31129967
+
+* Handle errors gracefully, e.g. when I query non-existent or unknown place name:
 ```
   $ go run weather_query.go Tolkien
   panic: runtime error: index out of range [0] with length 0
