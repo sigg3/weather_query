@@ -42,3 +42,5 @@ Short and sweet.
   panic: runtime error: index out of range [0] with length 0
 ```
 A useful error message is better than a panic.
+
+* Could add a parenthesis on tstamp (N &lt;time unit> ago)
