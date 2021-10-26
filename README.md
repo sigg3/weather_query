@@ -3,10 +3,11 @@ Short and sweet weather API query tool written in Go. It employs both GeoNorge (
 
 
 ## Build
-The compiled version is notably faster (0,168s vs 0,566s).
+To compile a binary simply run:
 ```
   go build weather_query.go
 ```
+The compiled version is notably faster (0,168s vs 0,566s).
 
 ## Usage
 
