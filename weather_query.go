@@ -75,7 +75,7 @@ func main() {
 		userLoc = os.Args[1]
 	} else {
 		fmt.Println(strings.Join([]string{"Usage:", os.Args[0], "<place>"}, " "))
-		fmt.Println("Error: Location string argument missing.")
+		fmt.Println("Error: Location string argument missing. Use any place in Norway.")
 		os.Exit(1)
 	}
 

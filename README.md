@@ -12,7 +12,9 @@ The compiled version is notably faster (0,168s vs 0,566s).
 ## Usage
 
 ```
-  Usage: ./weather_query <place name>
+  $ ./weather_query 
+  Usage: ./weather_query <place>
+  Error: Location string argument missing. Use any place in Norway.
 ```
 
 for example:
