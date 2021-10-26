@@ -31,7 +31,7 @@ for example:
   Wind speed:                   2.8 m/sec
 ```
 
-Short and sweet.
+Short and sweet. weather_query will pick the first hit if several.
 
 
 
@@ -46,3 +46,5 @@ Short and sweet.
 A useful error message is better than a panic.
 
 * Could add a parenthesis on tstamp (N &lt;time unit> ago)
+
+* Add an array of postal codes
