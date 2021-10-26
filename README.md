@@ -5,6 +5,19 @@ Short and sweet weather API query tool written in Go. It employs both GeoNorge (
   Usage: ./weather_query <place name>
 ```
 
+for example:
+
+```
+  $ go run weather_query.go Tønsberg
+  Current weather in:           Tønsberg (long: 10.40764, lat: 59.26751)
+  Query time:                   2021-10-26 12:00:00 +0000 UTC
+  Temperature (celsius):        10.9°C
+  Temperature (fahrenheit):     42.9°F
+  Airpressure at sea level:     1007.5 hPa
+  Current humidity:             70.3 %
+  Wind speed:                   3.5 m/sec
+```
+
 Short and sweet.
 
 
