@@ -1,3 +1,19 @@
+// Fetch the weather from YR using Norwegian place name.
+// For usage info, run the script without any arguments.
+// Written by Sigge Smelror (C) 2021, GNU GPL v. 3+
+//
+// weather_query is free software: you can redistribute it and/or
+// modify it under the terms of the GNU General Public License as
+// published by the Free Software Foundation, version 3 or newer.
+//
+// weather_query is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// URL: <https://www.gnu.org/licenses/gpl-3.0.txt>
+//
+// Bugs/Issues: <https://github.com/sigg3/weather_query/issues>
+
 package main
 
 import (
