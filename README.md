@@ -48,3 +48,5 @@ A useful error message is better than a panic.
 * Could add a parenthesis on tstamp (N &lt;time unit> ago)
 
 * Add an array of postal codes
+
+* Use argument flags, to allow for: --usage, --coord (don't lookup place name), --temperature ops.
