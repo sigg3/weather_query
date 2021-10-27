@@ -1,18 +1,19 @@
-// Fetch the weather from YR using Norwegian place name.
-// For usage info, run the script without any arguments.
-// Written by Sigge Smelror (C) 2021, GNU GPL v. 3+
-//
-// weather_query is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation, version 3 or newer.
-//
-// weather_query is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// URL: <https://www.gnu.org/licenses/gpl-3.0.txt>
-//
-// Bugs/Issues: <https://github.com/sigg3/weather_query/issues>
+/* Fetch the weather from YR using Norwegian place name.
+   For usage info, run the script without any arguments.
+   Written by Sigge Smelror (C) 2021, GNU GPL v. 3+
+
+   weather_query is free software: you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation, version 3 or newer.
+
+   weather_query is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   URL: <https://www.gnu.org/licenses/gpl-3.0.txt>
+
+   Bugs/Issues: <https://github.com/sigg3/weather_query/issues>
+*/
 
 package main
 
@@ -26,7 +27,7 @@ import (
 	"time"
 )
 
-type Location struct {
+type GeoNorgeJson struct {
 	Data []struct {
 		Name        string `json:"skrivemåte"`
 		Coordinates struct {
@@ -36,7 +37,7 @@ type Location struct {
 	} `json:"navn"`
 }
 
-type YR struct {
+type YrJson struct {
 	Data struct {
 		Timeseries []struct {
 			Time time.Time `json:"time"`
@@ -70,9 +71,9 @@ type YR struct {
 
 func main() {
 	// Get CLI arg (location) or print usage info
-	var userLoc string = "oslo"
+	var uLoc string = "oslo"
 	if len(os.Args) > 1 {
-		userLoc = os.Args[1]
+		uLoc = os.Args[1]
 	} else {
 		fmt.Println(strings.Join([]string{"Usage:", os.Args[0], "<place>"}, " "))
 		fmt.Println("Error: Location string argument missing. Use any place in Norway.")
@@ -83,97 +84,92 @@ func main() {
 	var xClient = &http.Client{Timeout: 10 * time.Second}
 
 	// create GET request for coordinates
-	const coord_api string = "https://ws.geonorge.no/stedsnavn/v1/navn?sok="
-	const coord_api_post string = "&utkoordsys=4258&treffPerSide=1&side=1"
-	coord_api_request := strings.Join([]string{coord_api, userLoc, coord_api_post}, "")
+	const COORD_API string = "https://ws.geonorge.no/stedsnavn/v1/navn?sok="
+	const COORD_SUFFIX string = "&utkoordsys=4258&treffPerSide=1&side=1"
+	coordApiReq := strings.Join([]string{COORD_API, uLoc, COORD_SUFFIX}, "")
 
-	// Send GET request to coord_api
-	coord_resp, err := xClient.Get(coord_api_request)
-	if err != nil {
-		panic(err)
+	// Send GET request to COORD_API
+	coordApiResp, coordApiErr := xClient.Get(coordApiReq)
+	if coordApiErr != nil {
+		panic(coordApiErr)
 	}
 
 	// Convert to text uint8
-	coord_body, readErr := ioutil.ReadAll(coord_resp.Body)
+	coordTxt, readErr := ioutil.ReadAll(coordApiResp.Body)
 	if readErr != nil {
 		fmt.Println("Read error GeoNorge")
 		panic(readErr)
 	}
 
 	// Parse into geo using Location struct
-	geo := Location{}
-	jsonErr := json.Unmarshal(coord_body, &geo)
-	if jsonErr != nil {
+	geo := GeoNorgeJson{}
+	geoErr := json.Unmarshal(coordTxt, &geo)
+	if geoErr != nil {
 		fmt.Println("JSON error GeoNorge")
-		panic(jsonErr)
+		panic(geoErr)
 	}
 
 	// Pull relevant variables
-	var place_name string = geo.Data[0].Name
-	var place_long float64 = geo.Data[0].Coordinates.Long
-	var place_lat float64 = geo.Data[0].Coordinates.Lat
+	var geoName string = geo.Data[0].Name
+	var geoLong float64 = geo.Data[0].Coordinates.Long
+	var geoLat float64 = geo.Data[0].Coordinates.Lat
 
 	// create GET request for weather query
-	const weather_api string = "https://api.met.no/weatherapi/locationforecast/2.0/compact.json?"
-	long_lat_str := fmt.Sprintf("lat=%v&lon=%v", place_lat, place_long) // lazy sprintf verb but oh well
-	weather_request := strings.Join([]string{weather_api, long_lat_str}, "")
+	const YR_API string = "https://api.met.no/weatherapi/locationforecast/2.0/compact.json?"
+	longLatStr := fmt.Sprintf("lat=%v&lon=%v", geoLat, geoLong) // lazy sprintf verb but oh well
+	weatherReq := strings.Join([]string{YR_API, longLatStr}, "")
 
 	// Construct GET request to weather_api
-	yr_api_request, yrReqErr := http.NewRequest("GET", weather_request, nil)
+	yrApiReq, yrReqErr := http.NewRequest("GET", weatherReq, nil)
 	if yrReqErr != nil {
 		panic(yrReqErr)
 	}
 
 	// Set User Agent header (YR requirement)
-	yr_api_request.Header.Set("Accept", "application/json")
-	yr_api_request.Header.Set("User-Agent", "GoLangTest/00.1")
+	yrApiReq.Header.Set("Accept", "application/json")
+	yrApiReq.Header.Set("User-Agent", "GoLangTest/00.1")
 
 	// Send GET request to YR weather API
-	yr_resp, yrRespErr := xClient.Do(yr_api_request)
-	if yrRespErr != nil {
-		panic(yrRespErr)
+	yrApiResp, yrApiErr := xClient.Do(yrApiReq)
+	if yrApiErr != nil {
+		panic(yrApiErr)
 	}
 
 	// Convert to text uint8
-	yr_raw, readYrErr := ioutil.ReadAll(yr_resp.Body)
+	yrTxt, readYrErr := ioutil.ReadAll(yrApiResp.Body)
 	if readYrErr != nil {
 		fmt.Println("Read error YR")
 		panic(readYrErr)
 	}
 
 	// Parse into YR weather data struct
-	yr_json := YR{}
-	json2Err := json.Unmarshal(yr_raw, &yr_json)
-	if json2Err != nil {
-		fmt.Println("JSON error YR")
-		// fmt.Println("yr_raw:")
-		// fmt.Println(yr_raw)
-		fmt.Println("yr_json:")
-		fmt.Println(yr_json)
-		panic(json2Err)
+	yrJson := YrJson{}
+	yrJsonErrErr := json.Unmarshal(yrTxt, &yrJson)
+	if yrJsonErrErr != nil {
+		panic(yrJsonErrErr)
 	}
 
 	// Pull relevant variables
-	yr := yr_json.Data.Timeseries[0].Data.Instant.Details
-	yr_time := yr_json.Data.Timeseries[0].Time
+	yr := yrJson.Data.Timeseries[0].Data.Instant.Details
+	yrTime := yrJson.Data.Timeseries[0].Time
 
 	// Get temperatures
-	temp_celsius := yr.AirTemperature
-	temp_fahrenheit := (temp_celsius * (9 / 5)) + 32
+	yrTempC := yr.AirTemperature
+	yrTempF := (yrTempC * (9 / 5)) + 32
 
 	// Print to screen (this is just lazy)
 	var output [8]string
-	output[0] = fmt.Sprintf("Current weather in:           %s", place_name)
-	output[1] = fmt.Sprintf("Coordinates (long, lat):      %v, %v", place_long, place_lat)
-	output[2] = fmt.Sprintf("Observation timestamp:        %v", yr_time)
-	output[3] = fmt.Sprintf("Temperature (celsius):        %v\u00B0C", temp_celsius)
-	output[4] = fmt.Sprintf("Temperature (fahrenheit):     %v\u00B0F", temp_fahrenheit)
+	output[0] = fmt.Sprintf("Current weather in:           %s", geoName)
+	output[1] = fmt.Sprintf("Coordinates (long, lat):      %v, %v", geoLong, geoLat)
+	output[2] = fmt.Sprintf("Observation timestamp:        %v", yrTime)
+	output[3] = fmt.Sprintf("Temperature (celsius):        %v\u00B0C", yrTempC)
+	output[4] = fmt.Sprintf("Temperature (fahrenheit):     %v\u00B0F", yrTempF)
 	output[5] = fmt.Sprintf("Airpressure at sea level:     %v hPa", yr.AirPressureAtSeaLevel)
 	output[6] = fmt.Sprintf("Current humidity:             %v %%", yr.RelativeHumidity)
 	output[7] = fmt.Sprintf("Wind speed:                   %v m/sec", yr.WindSpeed)
 
-	for _, showline := range output {
-		fmt.Println(showline)
+	for _, outLine := range output {
+		fmt.Println(outLine)
 	}
 
 }
