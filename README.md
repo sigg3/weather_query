@@ -7,7 +7,7 @@ To compile a binary simply run:
 ```
   go build weather_query.go
 ```
-The compiled version is notably faster (0,168s vs 0,566s).
+The compiled version is notably faster (0,168s vs 0,566s). There are also semi-current binaries for Linux, Mac and Windows 64-bit [in the /dist folder](https://github.com/sigg3/weather_query/tree/main/dist).
 
 ## Usage
 
